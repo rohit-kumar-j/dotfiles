@@ -165,16 +165,16 @@ export PATH=$PATH:"$HOME/.config/zig-aarch64-macos-0.16.0-dev.13+1594c8055"
 
 # --- Oh-my-posh Setup ---
 export PATH="$PATH:$HOME/.local/bin"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/atomic.omp.json)"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/negligible.omp.json)"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/kali.omp.json)"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/multiverse-neon.omp.json)"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/hunk.omp.json)"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/huvix.omp.json)"
-eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/nordtron.omp.json)"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/darkblood.omp.json)"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/emodipt-extend.omp.json)"
-# eval "$(oh-my-posh init zsh --config ~/.config/nvim/temp/omp_themes/powerlevel10k_classic.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/atomic.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/negligible.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/kali.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/multiverse-neon.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/hunk.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/huvix.omp.json)"
+eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/nordtron.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/darkblood.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/emodipt-extend.omp.json)"
+# eval "$(oh-my-posh init zsh --config ~/.config/omp_themes/powerlevel10k_classic.omp.json)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # History Grep: Ctrl+R

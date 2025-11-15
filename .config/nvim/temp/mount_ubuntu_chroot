@@ -1,0 +1,73 @@
+#!/bin/bash
+CHROOT_PATH="/srv/chroot/ubuntu-20.04-arm64"
+
+mount_chroot() {
+    echo "Mounting filesystems for Ubuntu chroot..."
+    
+    # Check if already mounted to avoid double-mounting
+    if ! mountpoint -q ${CHROOT_PATH}/proc; then
+        sudo mount -t proc proc ${CHROOT_PATH}/proc
+        echo "Mounted /proc"
+    fi
+    
+    if ! mountpoint -q ${CHROOT_PATH}/sys; then
+        sudo mount -t sysfs sysfs ${CHROOT_PATH}/sys
+        echo "Mounted /sys"
+    fi
+    
+    if ! mountpoint -q ${CHROOT_PATH}/dev; then
+        sudo mount --bind /dev ${CHROOT_PATH}/dev
+        echo "Mounted /dev"
+    fi
+    
+    if ! mountpoint -q ${CHROOT_PATH}/dev/pts; then
+        sudo mount --bind /dev/pts ${CHROOT_PATH}/dev/pts
+        echo "Mounted /dev/pts"
+    fi
+    
+    if ! mountpoint -q ${CHROOT_PATH}/tmp; then
+        sudo mount --bind /tmp ${CHROOT_PATH}/tmp
+        echo "Mounted /tmp"
+    fi
+    
+    if ! mountpoint -q ${CHROOT_PATH}/run; then
+        sudo mount --bind /run ${CHROOT_PATH}/run
+        echo "Mounted /run"
+    fi
+    
+    # Create and mount shared workspace
+    sudo mkdir -p /srv/shared-workspace ${CHROOT_PATH}/workspace
+    if ! mountpoint -q ${CHROOT_PATH}/workspace; then
+        sudo mount --bind /srv/shared-workspace ${CHROOT_PATH}/workspace
+        echo "Mounted /workspace"
+    fi
+    
+    # Copy DNS configuration
+    sudo cp /etc/resolv.conf ${CHROOT_PATH}/etc/resolv.conf
+    
+    echo "All filesystems mounted successfully"
+}
+
+unmount_chroot() {
+    echo "Unmounting filesystems..."
+    sudo umount ${CHROOT_PATH}/workspace 2>/dev/null || true
+    sudo umount ${CHROOT_PATH}/run 2>/dev/null || true
+    sudo umount ${CHROOT_PATH}/tmp 2>/dev/null || true
+    sudo umount ${CHROOT_PATH}/dev/pts 2>/dev/null || true
+    sudo umount ${CHROOT_PATH}/dev 2>/dev/null || true
+    sudo umount ${CHROOT_PATH}/sys 2>/dev/null || true
+    sudo umount ${CHROOT_PATH}/proc 2>/dev/null || true
+    echo "Unmounting complete"
+}
+
+status_chroot() {
+    echo "Mount status for ${CHROOT_PATH}:"
+    mount | grep ${CHROOT_PATH} || echo "No mounts found"
+}
+
+case "$1" in
+    mount)   mount_chroot ;;
+    umount)  unmount_chroot ;;
+    status)  status_chroot ;;
+    *)       echo "Usage: $0 {mount|umount|status}" ;;
+esac

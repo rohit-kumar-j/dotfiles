@@ -1,0 +1,5 @@
+plugin
+.luarc.json
+lazy-lock.json
+lua/lua/.luarc.json
+lua/core/plugin_config/extra_dashboard.lua

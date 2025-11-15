@@ -1,0 +1,128 @@
+# Create chroot directory
+sudo mkdir -p /srv/chroot/ubuntu-20.04-arm64
+
+# Bootstrap Ubuntu 20.04 (Focal Fossa) for ARM64
+sudo debootstrap --arch=arm64 --variant=buildd focal \
+    /srv/chroot/ubuntu-20.04-arm64 \
+    http://ports.ubuntu.com/ubuntu-ports/
+
+# Copy QEMU static binary for cross-architecture support
+sudo cp /usr/bin/qemu-aarch64-static \
+    /srv/chroot/ubuntu-20.04-arm64/usr/bin/
+
+# Configure APT sources for ARM64
+sudo tee /srv/chroot/ubuntu-20.04-arm64/etc/apt/sources.list << EOF
+deb http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports focal-security main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse
+EOF
+
+# Copy DNS configuration
+sudo cp /etc/resolv.conf /srv/chroot/ubuntu-20.04-arm64/etc/resolv.conf
+
+# Enter chroot and set up basics
+sudo chroot /srv/chroot/ubuntu-20.04-arm64 /bin/bash
+export HOME=/root
+export LC_ALL=C
+
+# Update and install essential packages
+apt-get install apt-file
+apt-get update
+apt-get install -y locales ubuntu-minimal vim wget curl sudo
+locale-gen en_US.UTF-8
+update-locale LANG=en_US.UTF-8
+
+# Install networking tools
+apt-get install -y net-tools iputils-ping dnsutils
+exit
+
+
+
+
+
+
+-------------------
+
+Fix terminal Issues
+
+# Create enhanced chroot entry script
+sudo tee /usr/local/bin/enter-ubuntu-chroot << 'EOF'
+#!/bin/bash
+
+CHROOT_PATH="/srv/chroot/ubuntu-20.04-arm64"
+
+# Mount filesystems if not already mounted
+if ! mountpoint -q ${CHROOT_PATH}/proc; then
+    /usr/local/bin/mount-ubuntu-chroot mount
+fi
+
+# Copy current terminal info to chroot
+sudo cp /usr/share/terminfo/x/xterm* ${CHROOT_PATH}/usr/share/terminfo/x/ 2>/dev/null || true
+
+# Enter chroot with proper environment
+sudo chroot ${CHROOT_PATH} /usr/bin/env -i \
+    HOME=/root \
+    TERM="${TERM:-xterm-256color}" \
+    USER=root \
+    LOGNAME=root \
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    SHELL=/bin/bash \
+    PS1='(ubuntu-chroot) \u@\h:\w\$ ' \
+    /bin/bash --login
+EOF
+
+sudo chmod +x /usr/local/bin/enter-ubuntu-chroot
+
+# Use the new script
+enter-ubuntu-chroot
+
+
+
+
+
+
+-----------------------
+
+Fix ls /proc issues
+
+# Set the chroot path
+CHROOT_PATH="/srv/chroot/ubuntu-20.04-arm64"
+
+# Mount proc filesystem
+sudo mount -t proc proc ${CHROOT_PATH}/proc
+
+# Mount sys filesystem
+sudo mount -t sysfs sysfs ${CHROOT_PATH}/sys
+
+# Mount dev filesystem
+sudo mount --bind /dev ${CHROOT_PATH}/dev
+
+# Mount dev/pts for terminal support
+sudo mount --bind /dev/pts ${CHROOT_PATH}/dev/pts
+
+# Mount tmp directory
+sudo mount --bind /tmp ${CHROOT_PATH}/tmp
+
+# Mount run directory for runtime files
+sudo mount --bind /run ${CHROOT_PATH}/run
+
+# Verify the mounts
+mount | grep ${CHROOT_PATH}
+
+
+
+
+----------------------
+
+Fix Python.h issues, when building LCM:
+
+cmake .. -DLCM_ENABLE_PYTHON=OFF
+
+
+
+-------------------
+
+To install packages in venv:
+
+pip install --root-user-action=ignore setuptools

@@ -1,0 +1,101 @@
+---@desc Only toggle the focus to the tree if the tree is open
+function _G.toggle_neotree()
+  local curr_ft = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(0),"ft")
+  local neo_tree_win_exists = nil
+  for _, bufnr in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local ft = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(bufnr),"ft")
+    if string.find(ft, "neo%-tree") then
+      neo_tree_win_exists = true
+      break
+    else
+    end
+  end
+
+  if string.find(curr_ft, "neo%-tree") then
+    vim.cmd("wincmd p")
+  else
+    vim.cmd('Neotree focus')
+  end
+
+end
+
+---@desc Only toggle the tree open, but do not focus on the tree ... Only peek
+function _G.peek_neotree()
+  --- Chcek if a buffer named neo-tree exists in any window at all in the current tab page
+  local neo_tree_win_exists = nil
+  for _, bufnr in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local ft = vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(bufnr),"ft")
+    if string.find(ft, "neo%-tree") then
+      neo_tree_win_exists = true
+      break
+    else
+    end
+  end
+
+  if neo_tree_win_exists == true then
+    vim.cmd('Neotree close')
+  else
+    vim.cmd('Neotree')
+    vim.cmd("wincmd p")
+  end
+end
+
+return {
+  "nvim-neo-tree/neo-tree.nvim",
+  enabled = vim.api.nvim_get_var("useNeoTree"),
+  branch = "v3.x",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+    "MunifTanjim/nui.nvim",
+  },
+
+  keys = {
+    { "<leader>e", "<cmd>lua toggle_neotree()<CR>", desc = "NeoTree Find File Focus"}, -- Done
+    { "<leader>r", "<cmd>lua peek_neotree()<CR>", desc = "NeoTree Peek"}, -- Done
+  },
+
+  config = function()
+    require("neo-tree").setup({
+      source_selector = {
+        winbar = true,
+        statusline = false
+      },
+      filesystem = {
+        use_libuv_file_watcher = true,
+        follow_current_file = {
+          enabled = true,
+          leave_dirs_open = true,
+        },
+      },
+      window = {
+        mapping_options = {
+          noremap = true,
+          nowait = true,
+        },
+        filesystem = {
+          window = {
+            ["<space>"] = {
+              "none",
+              nowait = true,
+            },
+          },
+          ["<cr>"] = {
+            "open",
+            nowait = true,
+          },
+        },
+        mappings = {
+          ["<BS>"] = {
+            "close_node",
+            nowait = true,
+          },
+          ["<cr>"] = {
+            "toggle_node",
+            nowait = true,
+          },
+        }
+      }
+    })
+  end
+}

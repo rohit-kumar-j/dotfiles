@@ -1,0 +1,28 @@
+return {
+  { "catppuccin/nvim",             event = "VeryLazy" },
+  { "projekt0n/github-nvim-theme", event = "VeryLazy" },
+  { "kaiuri/nvim-juliana",         event = "VeryLazy" },
+  { "AhmedAbdulrahman/vim-aylin",  event = "VeryLazy" },
+  { "catppuccin/nvim",             event = "VeryLazy" },
+  { "bluz71/vim-moonfly-colors",   event = "VeryLazy" },
+  { "bluz71/vim-nightfly-colors",  event = "VeryLazy" },
+  { "wuelnerdotexe/vim-enfocado",  event = "VeryLazy" },
+  { "rebelot/kanagawa.nvim",            event = "VeryLazy" },
+  { "arturgoms/moonbow.nvim",           event = "VeryLazy" },
+  { "rebelot/kanagawa.nvim",            event = "VeryLazy" },
+  { "uloco/bluloco.nvim",               event = "VeryLazy" },
+  { "tanvirtin/monokai.nvim",           event = "VeryLazy" },
+  { "loctvl842/monokai-pro.nvim",       event = "VeryLazy" },
+  { "EdenEast/nightfox.nvim",           event = "VeryLazy" },
+  { "shaunsingh/nord.nvim",             event = "VeryLazy" },
+  { "navarasu/onedark.nvim",            event = "VeryLazy" },
+  { "olimorris/onedarkpro.nvim",        event = "VeryLazy" },
+  { "nyoom-engineering/oxocarbon.nvim", event = "VeryLazy" },
+  { "rose-pine/neovim",                 event = "VeryLazy" },
+  { "tiagovla/tokyodark.nvim",          event = "VeryLazy" },
+  {
+    "mcchrish/zenbones.nvim",
+    dependencies = "rktjmp/lush.nvim",
+    event = "VeryLazy"
+  },
+}
