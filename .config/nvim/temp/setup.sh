@@ -57,6 +57,9 @@ mv $HOME/.config/nvim/temp/.zshrc $HOME/.zshrc
 #Cargo
 curl https://sh.rustup.rs -sSf | sh
 
+# Pyenv
+# curl -fsSL https://pyenv.run | bash
+
 #lazygit
 sudo dnf copr enable atim/lazygit -y
 sudo dnf install lazygit -y
