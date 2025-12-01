@@ -26,10 +26,11 @@ git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.
 curl -fsS https://dl.brave.com/install.sh | sh
 
 #kitty
-mkdir $HOME/.config/kitty
+# mkdir $HOME/.config/kitty
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-mv $HOME/.config/nvim/temp/kitty/applicaitons/kitty.conf $HOME/.config/kitty/kitty.conf
-mv $HOME/.config/nvim/temp/kitty/applicaitons/font-nerd-symbols.conf $HOME/.config/kitty/font-nerd-symbols.conf
+cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
+# mv $HOME/.config/nvim/temp/kitty/applicaitons/kitty.conf $HOME/.config/kitty/kitty.conf
+# mv $HOME/.config/nvim/temp/kitty/applicaitons/font-nerd-symbols.conf $HOME/.config/kitty/font-nerd-symbols.conf
 
 #Sioyek
 sudo dnf install qt5-qtbase-devel qt5-qtbase-static qt5-qt3d-devel harfbuzz-devel mesa-libGL-devel glfw-devel
