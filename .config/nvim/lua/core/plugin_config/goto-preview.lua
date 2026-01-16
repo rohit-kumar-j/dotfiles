@@ -2,6 +2,7 @@ return {
   "rmagatti/goto-preview",
   enabled = vim.api.nvim_get_var("useGotoPreview"),
   event = "LspAttach",
+  dependencies = {"rmagatti/logger.nvim"},
   config = function()
     require("goto-preview").setup {}
     vim.keymap.set("n", "<leader><leader>d",

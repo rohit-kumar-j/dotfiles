@@ -91,7 +91,7 @@ _G.User.autoformat = false
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
-    vim.highlight.on_yank()
+    vim.hl.on_yank()
   end,
   group = highlight_group,
   pattern = "*",
@@ -103,12 +103,18 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = "*",
   callback = function(args)
     if _G.User.autoformat == true and vim.bo.filetype ~= "help" then
-      -- Format entire buffer when auto-format is enabled
-      require("conform").format({
-        bufnr = args.buf,
-        lsp_format = "fallback",
-        timeout_ms = 500,
-      })
+      -- Try conform first, fallback to LSP if conform not available
+      local conform_ok, conform = pcall(require, "conform")
+      if conform_ok then
+        conform.format({
+          bufnr = args.buf,
+          lsp_format = "fallback",
+          timeout_ms = 500,
+        })
+      else
+        -- Fallback: use native LSP formatting if conform is removed
+        vim.lsp.buf.format({ bufnr = args.buf, timeout_ms = 500 })
+      end
     end
   end
 })
@@ -127,33 +133,33 @@ vim.api.nvim_set_keymap("n", "<leader>F", ":lua toggleAutoformat()<CR>", {
 })
 
 -- Manual formatting keymap (works in normal & visual mode, auto-detects range)
-vim.keymap.set({ "n", "v" }, "f", function()
-  local mode = vim.api.nvim_get_mode().mode
-  local opts = {
-    async = true,
-    lsp_format = "fallback",
-    timeout_ms = 500,
-  }
-
-  -- Check if we're in visual mode
-  if mode:match("[vV\x16]") then
-    -- Get visual selection range
-    local start_pos = vim.fn.getpos("'<")
-    local end_pos = vim.fn.getpos("'>")
-
-    -- Conform expects range in this format: {start = {row, col}, end = {row, col}}
-    -- Using 1-based indexing for row, 0-based for col
-    opts.range = {
-      start = { start_pos[2], start_pos[3] - 1 },
-      ["end"] = { end_pos[2], end_pos[3] - 1 }
-    }
-
-    -- Exit visual mode first
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-  end
-
-  require("conform").format(opts)
-end, { desc = "Format code" })
+-- vim.keymap.set({ "n", "v" }, "f", function()
+--   local mode = vim.api.nvim_get_mode().mode
+--   local opts = {
+--     async = true,
+--     lsp_format = "fallback",
+--     timeout_ms = 500,
+--   }
+--
+--   -- Check if we're in visual mode
+--   if mode:match("[vV\x16]") then
+--     -- Get visual selection range
+--     local start_pos = vim.fn.getpos("'<")
+--     local end_pos = vim.fn.getpos("'>")
+--
+--     -- Conform expects range in this format: {start = {row, col}, end = {row, col}}
+--     -- Using 1-based indexing for row, 0-based for col
+--     opts.range = {
+--       start = { start_pos[2], start_pos[3] - 1 },
+--       ["end"] = { end_pos[2], end_pos[3] - 1 }
+--     }
+--
+--     -- Exit visual mode first
+--     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+--   end
+--
+--   require("conform").format(opts)
+-- end, { desc = "Format code" })
 
 
 

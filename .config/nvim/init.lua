@@ -2,7 +2,7 @@
 local vim = vim
 vim.api.nvim_set_var("debug", false)                    -- For debugging o/p
 vim.api.nvim_set_var("copy_to_single_clipboard", false) -- Copy with y to main clipboard. Only tested to win32 and wsl
-vim.api.nvim_set_var("Is_Asahi", true)                  -- Specific LSP Settings for Aashi Linux ... till it gets fixed
+vim.api.nvim_set_var("Is_Asahi", false)                 -- Specific LSP Settings for Aashi Linux ... till it gets fixed
 
 vim.api.nvim_set_var("useDiffViewNvim", true)           -- Diff View
 vim.api.nvim_set_var("useGitSigns", true)               -- Side column Git Preview
@@ -41,7 +41,7 @@ vim.api.nvim_set_var("useHardtime", false)              -- Disable Spamming HJKL
 vim.api.nvim_set_var("useTODOList", true)               -- TODO Lists
 vim.api.nvim_set_var("useToggleTerm", true)             -- Terminals
 
-vim.api.nvim_set_var("useLSP", false)                    -- LSP
+vim.api.nvim_set_var("useLSP", true)                    -- LSP
 vim.api.nvim_set_var("useCMP", true)                    -- CMP needs to be on regardless
 vim.api.nvim_set_var("useMason", true)                  -- Mason LSP Installer
 vim.api.nvim_set_var("useNeogen", true)                 -- Function Annotations
@@ -101,3 +101,8 @@ vim.cmd([[:hi NonText ctermfg=12 guibg=bule]])
 vim.cmd([[:hi Search guibg=yellow guifg=green]])
 vim.api.nvim_set_hl(0, "EndOfBuffer", { fg = "lightblue" })
 vim.opt.fillchars = { eob = "~" }
+
+--supressions
+vim.cmd([[let g:loaded_node_provider = 0]]) -- supress healthcheck error
+vim.cmd([[let g:loaded_perl_provider = 0]]) -- supress healthcheck error
+vim.cmd([[let g:loaded_ruby_provider = 0]]) -- supress healthcheck error
