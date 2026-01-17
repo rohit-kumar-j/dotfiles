@@ -182,7 +182,7 @@ vim.api.nvim_set_var("lsp_servers",
     },
     {
       name = "ltex", -- for latex, markdown lsp
-      cmd = { "ltex-ls" },
+      cmd = { "ltex-ls-plus" },
       additionalRules = {
         languageModel = { "~/ngrams/" },
       },
