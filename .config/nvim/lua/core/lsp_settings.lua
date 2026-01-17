@@ -62,6 +62,7 @@ vim.api.nvim_set_var("lsp_servers",
     },
     {
       name     = "cmake",
+      cmd = { "cmake-language-server" },
       settings = {
         CMake = {
           filetypes = { "cmake", "CMakeLists.txt", "CMakeCache.txt" },
@@ -70,6 +71,7 @@ vim.api.nvim_set_var("lsp_servers",
     },
     {
       name     = "neocmake",
+      cmd = { "neocmakelsp", "stdio" },
       settings = {
         CMake = {
           filetypes = { "cmake", "CMakeLists.txt", "CMakeCache.txt" },
@@ -93,9 +95,10 @@ vim.api.nvim_set_var("lsp_servers",
         completeUnimported = true,
         clangdFileStatus = true,
       },
+      filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
       mason = false,
       flags = { debounce_text_changes = 150 },
-      on_new_config = function(new_config, new_cwd)
+      on_new_config = function(new_config, _) -- new_cwd is the 2nd arg
         local status, cmake = pcall(require, "cmake-tools")
         if status then
           cmake.clangd_on_new_config(new_config)
@@ -107,9 +110,12 @@ vim.api.nvim_set_var("lsp_servers",
     -- },
     {
       name = "jsonls", -- for json formatting
+      cmd = { "vscode-json-language-server", "--stdio" },
+
     },
     {
       name = "pylsp",
+      cmd = { "pylsp" },
       settings = {
         enable = true,
         -- trace = { server = "verbose" },
@@ -131,7 +137,6 @@ vim.api.nvim_set_var("lsp_servers",
           pylint = { enabled = false },
           pyflakes = { enabled = false },
           pycodestyle = { enabled = false },
-          flake8 = { enabled = false },
           mccabe = { enabled = false },
           flake8 = {
             enabled = false -- Disable flake8 since using pycodestyle directly
@@ -171,11 +176,13 @@ vim.api.nvim_set_var("lsp_servers",
     },
     {
       name = "marksman", -- for latex, lsp
+      cmd = { "marksman", "server" },
       filetypes = { "bib", "gitcommit", "markdown", "org", "plaintex", "rst", "rnoweb", "tex", "pandoc", "text",
         "txt" }
     },
     {
       name = "ltex", -- for latex, markdown lsp
+      cmd = { "ltex-ls" },
       additionalRules = {
         languageModel = { "~/ngrams/" },
       },
@@ -184,6 +191,7 @@ vim.api.nvim_set_var("lsp_servers",
     },
     {
       name = "texlab", -- for reStructuredText lsp
+      cmd = { "texlab" },
     },
     -- {
     --   name = "esbonio", -- for reStructuredText lsp

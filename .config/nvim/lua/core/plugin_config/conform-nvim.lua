@@ -22,7 +22,7 @@ return {
 	},
 	opts = {
 		formatters_by_ft = {
-			lua = { "lua_ls" },
+			lua = { "stylua" },
 			python = { "isort", "black" },
 		},
 		log_level = vim.log.levels.ERROR,
@@ -32,16 +32,14 @@ return {
 		formatters = {
 			stylua = {
 				prepend_args = {
-					-- "--column-width",
-					-- "120", -- Max line width
-					-- "--line-endings",
-					-- "Unix",
-					-- "--indent-type",
-					-- "Spaces",
-					-- "--indent-width",
-					-- "2",
-					-- "--quote-style",
-					-- "AutoPreferDouble",
+					"--indent-type",
+					"Spaces",
+					"--indent-width",
+					"2",
+					"--column-width",
+					"120",
+					"--quote-style",
+					"AutoPreferDouble",
 				},
 			},
 		},

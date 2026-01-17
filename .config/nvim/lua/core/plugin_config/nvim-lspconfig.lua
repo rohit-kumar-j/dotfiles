@@ -126,15 +126,46 @@ return {
       }
     end
 
+    -- First, register all servers with vim.lsp.config (for Neovim 0.10+)
     for _, lsp in ipairs(lsp_servers) do
-      require("lspconfig")[lsp.name].setup {
-        settings = lsp.settings,
-        on_attach = on_attach,
-        on_new_config = lsp.on_new_config,
+      -- Register the server configuration
+      vim.lsp.config(lsp.name, {
+        cmd = lsp.cmd or nil,
+        filetypes = lsp.filetypes or nil,
+        root_dir = lsp.root_dir or nil,
+        settings = lsp.settings or {},
+      })
+    end
+
+    -- Configure each server using new API
+    for _, lsp in ipairs(lsp_servers) do
+      local config = { -- Start with base config that always applies
         capabilities = capabilities,
+        on_attach = on_attach,
         handlers = handlers,
       }
+      -- Merge all fields from lsp table (except 'name' which is just the identifier)
+      for key, value in pairs(lsp) do
+        if key ~= "name" then
+          config[key] = value
+        end
+      end
+      vim.lsp.config(lsp.name, config) -- Use new vim.lsp.config API (Neovim 0.11+)
+      vim.lsp.enable(lsp.name) -- Enable servers
     end
+
+    -- for _, lsp in ipairs(lsp_servers) do
+    --   require("lspconfig")[lsp.name].setup {
+    --     settings = lsp.settings,
+    --     on_attach = on_attach,
+    --     on_new_config = lsp.on_new_config,
+    --     capabilities = capabilities,
+    --     handlers = handlers,
+    --     filetypes = lsp.filetypes,
+    --     init_options = lsp.init_options,
+    --     flags = lsp.flags
+    --   }
+    -- end
 
     ---Keymaps
     vim.keymap.set("n", "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<CR>", { desc = "Code Action" })

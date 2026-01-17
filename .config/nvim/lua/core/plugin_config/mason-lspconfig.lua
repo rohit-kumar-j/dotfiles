@@ -8,7 +8,7 @@ return {
       opts = {
         PATH = "append", -- Try removing this line outside Asahi Linux
       },
-    }
+    },
   },
   config = function()
     -- NOTE: This is mentioned in the init.lua
@@ -19,13 +19,8 @@ return {
       table.insert(server_names, server.name)
     end
 
-    local isAsahiLinux = vim.api.nvim_get_var("Is_Asahi")
-    if (isAsahiLinux ~= true) then
-      require("mason-lspconfig").setup({
-        ensure_installed = server_names,
-      })
-    else
-      require("mason-lspconfig").setup()
-    end
-  end
+    require("mason-lspconfig").setup({
+      ensure_installed = server_names,
+    })
+  end,
 }
