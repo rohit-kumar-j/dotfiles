@@ -41,7 +41,7 @@ vim.api.nvim_set_var("useHardtime", false)              -- Disable Spamming HJKL
 vim.api.nvim_set_var("useTODOList", true)               -- TODO Lists
 vim.api.nvim_set_var("useToggleTerm", true)             -- Terminals
 
-vim.api.nvim_set_var("useLSP", true)                    -- LSP
+vim.api.nvim_set_var("useLSP", false)                   -- LSP
 vim.api.nvim_set_var("useCMP", true)                    -- CMP needs to be on regardless
 vim.api.nvim_set_var("useMason", true)                  -- Mason LSP Installer
 vim.api.nvim_set_var("useNeogen", true)                 -- Function Annotations
