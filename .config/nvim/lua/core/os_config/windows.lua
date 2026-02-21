@@ -6,6 +6,7 @@ if (vim.api.nvim_get_var("copy_to_single_clipboard") == true) then
 end
 
 vim.g.workbench_storage_path = vim.fn.expand("~") .. "/AppData/Local/nvim_workbench/" .. vim.g.notes_folder
+vim.g.trash_path = vim.fn.expand("$RECYCLE.BIN")
 
 -- Toggle term settigs
 local powershell_options = {

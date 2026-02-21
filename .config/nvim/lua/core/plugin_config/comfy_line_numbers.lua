@@ -1,7 +1,7 @@
 return {
   'mluders/comfy-line-numbers.nvim',
   enabled = vim.api.nvim_get_var("useComfyLineNumbers"),
-  event = "BufReadPre",
+  event = "VeryLazy",
   config = function()
     require('comfy-line-numbers').setup({
       labels = {

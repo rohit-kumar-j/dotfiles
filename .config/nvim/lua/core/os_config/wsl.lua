@@ -10,3 +10,6 @@ if (vim.api.nvim_get_var("copy_to_single_clipboard") == true) then
 	]]
 end
 vim.g.workbench_storage_path = vim.fn.expand("~") .. "/.cache/nvim_workbench/" .. vim.g.notes_folder
+local xdg_data = os.getenv("XDG_DATA_HOME") or vim.fn.expand("~/.local/share")
+vim.g.trash_path = xdg_data .. "/Trash/files"
+

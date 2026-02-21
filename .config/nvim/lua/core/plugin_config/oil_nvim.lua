@@ -3,8 +3,9 @@ return {
   enabled = vim.api.nvim_get_var("useOilNvim"),
   -- priority = 1000,
   keys = {
-    { "<leader>o", "<cmd>Oil<CR>",                                    desc = "Oil" },
-    { "<leader>O", [[:lua require('oil').open(vim.fn.getcwd())<CR>]], desc = "Oil CWD" }
+    { "<leader>o", "<cmd>Oil<CR>",                                     desc = "Oil" },
+    { "<leader>O", [[:lua require('oil').open(vim.fn.getcwd())<CR>]],  desc = "Oil CWD" },
+    { "<leader>B", function() require('oil').open(vim.g.trash_path) end, desc = "Open Trash Bin" },
   },
   opts = {},
   -- Optional dependencies
