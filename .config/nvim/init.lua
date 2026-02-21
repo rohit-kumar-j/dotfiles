@@ -22,6 +22,8 @@ vim.api.nvim_set_var("useWhichKey", true)               -- Remeber Keys
 vim.api.nvim_set_var("useWrapping", true)               -- Line Wrapping Plugin
 vim.api.nvim_set_var("useNoice", false)                 -- Commandline and Messages in UI
 vim.api.nvim_set_var("useNotify", false)                -- UI Messages
+vim.api.nvim_set_var("useComfyLineNumbers", true)       -- Left hand Side Relative Line Numbers only
+vim.api.nvim_set_var("useURLView", true)                -- Project wide URL Picker
 
 vim.api.nvim_set_var("useMarkdownHeadlines", false)     -- For Markdown Headlines
 vim.api.nvim_set_var("useGlowNvim", true)               -- For Markdown Preview
