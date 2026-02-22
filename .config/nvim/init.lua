@@ -50,7 +50,7 @@ vim.api.nvim_set_var("useNeogen", true)                 -- Function Annotations
 
 vim.api.nvim_set_var("useLtexLSP", false)               -- Sepcially for latex, keep false
 vim.api.nvim_set_var("useStylua", true)                 -- Lus Formatting
-vim.api.nvim_set_var("useJupyter", false)               -- Juypter Note Books
+vim.api.nvim_set_var("useJupyter", true)               -- Juypter Note Books
 vim.api.nvim_set_var("useIncline", false)               -- Floating Status Lines
 
 vim.api.nvim_set_var("useNvimComment", false)           -- Code Commenting
@@ -107,4 +107,12 @@ vim.opt.fillchars = { eob = "~" }
 --supressions
 vim.cmd([[let g:loaded_node_provider = 0]]) -- supress healthcheck error
 vim.cmd([[let g:loaded_perl_provider = 0]]) -- supress healthcheck error
+
+--python notebooks
+vim.g.python3_host_prog = "/home/rohit/miniconda3/envs/rlgpu/bin/python"
+-- Optional: Set VIRTUAL_ENV to conda prefix if in a conda environment
+if vim.fn.exists("$CONDA_PREFIX") == 1 then
+  vim.env.VIRTUAL_ENV = vim.fn.getenv("CONDA_PREFIX")
+end
+
 vim.cmd([[let g:loaded_ruby_provider = 0]]) -- supress healthcheck error
