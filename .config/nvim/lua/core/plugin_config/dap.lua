@@ -16,13 +16,14 @@ return {
     local dap = require("dap")
 
     -- Use new diagnostic signs API (Neovim 0.10+)
+    local icons = require("core.icons")
     vim.diagnostic.config({
       signs = {
         text = {
-          [vim.diagnostic.severity.ERROR] = "🔴",
-          [vim.diagnostic.severity.WARN] = "🟡",
-          [vim.diagnostic.severity.INFO] = "🗨️",
-          [vim.diagnostic.severity.HINT] = "💡",
+          [vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
+          [vim.diagnostic.severity.WARN] = icons.diagnostics.Warning,
+          [vim.diagnostic.severity.INFO] = icons.diagnostics.Information,
+          [vim.diagnostic.severity.HINT] = icons.diagnostics.Hint,
         },
       },
     })
@@ -89,6 +90,12 @@ return {
       type = "executable",
       command = vim.fn.stdpath("data") .. "/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7"
     }
+    dap.adapters.debugpy = {
+      type = "executable",
+      command = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python",
+      args = { "-m", "debugpy.adapter" },
+    }
+
     dap.configurations.cpp = {
       {
         name = "Launch file",
@@ -101,6 +108,31 @@ return {
         stopOnEntry = false,
       },
     }
+    
+    dap.configurations.python = {
+      {
+        type = 'debugpy',
+        request = 'launch',
+        name = "launch file",
+        program = "${file}",
+        cwd = "${workspaceFolder}",
+        stopOnEntry = true,
+        pythonPath = function()
+          -- search for venv in project root
+          local cwd = vim.fn.getcwd()
+          for _, dir in ipairs({ "venv", ".venv", "env", ".env" }) do
+            local path = cwd .. "/" .. dir .. "/bin/python"
+            if vim.fn.executable(path) == 1 then
+              return path
+            end
+          end
+          -- fallback to system python
+          return vim.fn.exepath("python3") or vim.fn.exepath("python") or "python"
+        end,
+      },
+    }
+
+
     -- dap.configurations.c = {
     --   {
     --     name = "Debug J-Link",

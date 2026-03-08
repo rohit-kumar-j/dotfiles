@@ -21,6 +21,7 @@ return {
 
     require("mason-lspconfig").setup({
       ensure_installed = server_names,
+      automatic_enable = false, -- we handle enabling via vim.lsp.enable() in nvim-lspconfig
     })
   end,
 }

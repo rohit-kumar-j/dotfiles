@@ -43,13 +43,14 @@ vim.api.nvim_set_var("useHardtime", false)              -- Disable Spamming HJKL
 vim.api.nvim_set_var("useTODOList", true)               -- TODO Lists
 vim.api.nvim_set_var("useToggleTerm", true)             -- Terminals
 
-vim.api.nvim_set_var("useLSP", false)                   -- LSP
+vim.api.nvim_set_var("useLSP", true)                    -- LSP
 vim.api.nvim_set_var("useCMP", true)                    -- CMP needs to be on regardless
 vim.api.nvim_set_var("useMason", true)                  -- Mason LSP Installer
 vim.api.nvim_set_var("useNeogen", true)                 -- Function Annotations
 
-vim.api.nvim_set_var("useLtexLSP", false)               -- Sepcially for latex, keep false
-vim.api.nvim_set_var("useStylua", true)                 -- Lus Formatting
+vim.api.nvim_set_var("useCmakeLSP", false)               -- cmake-language-server (heavy, neocmake is lighter)
+vim.api.nvim_set_var("useLatexLSP", false)               -- Specially for latex, keep false
+vim.api.nvim_set_var("useStylua", true)                 -- Lua Formatting
 vim.api.nvim_set_var("useJupyter", true)               -- Juypter Note Books
 vim.api.nvim_set_var("useIncline", false)               -- Floating Status Lines
 
@@ -69,7 +70,7 @@ vim.api.nvim_set_var("useNeoTree", false)               -- Tree View
 vim.api.nvim_set_var("useDropbar", false)               -- Breadcrumbs from top of buffer
 
 vim.api.nvim_set_var("useVimspector", true)
-vim.api.nvim_set_var("useNvimDAP", false)
+vim.api.nvim_set_var("useNvimDAP", true)
 
 -- Quickly load config
 vim.loader.enable()

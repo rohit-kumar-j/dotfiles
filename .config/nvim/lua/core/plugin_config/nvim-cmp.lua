@@ -14,6 +14,7 @@ return {
     "ray-x/cmp-treesitter",
     {"L3MON4D3/LuaSnip", build = "make install_jsregexp" },
     "rafamadriz/friendly-snippets",
+    "honza/vim-snippets",
     "saadparwaiz1/cmp_luasnip",
   },
   config = function()
@@ -29,36 +30,84 @@ return {
       return
     end
 
-    require("luasnip.loaders.from_lua").load({
-      paths = "C:/Users/Rohit/AppData/Local/nvim/lua/core/plugin_config/snippets/"
-    })
-
     luasnip.config.set_config({
       history = true,                            --keep around last snippet local to jump back
       updateevents = "TextChanged,TextChangedI", --update changes as you type
       enable_autosnippets = true,
-      -- ext_opts = {
-      --   [types.choiceNode] = {
-      --     active = {
-      --       virt_text = { { "●", "GruvboxOrange" } },
-      --     },
-      --   },
-      --   [types.insertNode] = {
-      --    active = {
-      --            virt_text = { { "●", "GruvboxBlue" } },
-      --    },
-      --   },
-      -- },
     })
 
+    -- Load friendly-snippets (VSCode format) into LuaSnip
+    require("luasnip.loaders.from_vscode").lazy_load()
+    -- Load honza/vim-snippets (SnipMate format) into LuaSnip
+    require("luasnip.loaders.from_snipmate").lazy_load()
+
+    -- Custom snippets
+    local s = luasnip.snippet
+    local t = luasnip.text_node
+    local i = luasnip.insert_node
+    luasnip.add_snippets("python", {
+      s("defmain", {
+        t("def main(argc, argv):"),
+        t({"", "\t"}), i(1, "pass"),
+      }),
+    })
+
+    local check_backspace = function()
+      local col = vim.fn.col(".") - 1
+      return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
+    end
+
+    local neogen_ok, neogen = pcall(require, "neogen")
+
+    local compare = require("cmp.config.compare")
+    local lsp = require("cmp.types").lsp
+
+    -- Deprioritize Keywords and Text below real completions (Class, Function, Variable, Snippet, etc.)
+    local lspkind_comparator = function(entry1, entry2)
+      local kind1 = entry1:get_kind()
+      local kind2 = entry2:get_kind()
+      local deprioritized = { [lsp.CompletionItemKind.Keyword] = true, [lsp.CompletionItemKind.Text] = true }
+      local dep1 = deprioritized[kind1] or false
+      local dep2 = deprioritized[kind2] or false
+      if dep1 ~= dep2 then
+        return not dep1
+      end
+      return nil
+    end
+
+    -- Among snippets, prefer longer/more verbose ones (classi~ > class~)
+    local snippet_verbosity = function(entry1, entry2)
+      local kind1 = entry1:get_kind()
+      local kind2 = entry2:get_kind()
+      if kind1 == lsp.CompletionItemKind.Snippet and kind2 == lsp.CompletionItemKind.Snippet then
+        local word1 = entry1:get_completion_item().insertText or entry1:get_completion_item().label or ""
+        local word2 = entry2:get_completion_item().insertText or entry2:get_completion_item().label or ""
+        if #word1 ~= #word2 then
+          return #word1 > #word2
+        end
+      end
+      return nil
+    end
+
     cmp.setup({
-      completion = { border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, scrollbar = "║" },
       window = {
+        completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
-        -- documentation = {
-        border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-        scrollbar = "║",
-        completion = cmp.config.window.bordered()
+      },
+      sorting = {
+        comparators = {
+          compare.offset,
+          compare.exact,
+          compare.score,
+          lspkind_comparator,
+          snippet_verbosity,
+          compare.recently_used,
+          compare.locality,
+          compare.kind,
+          compare.sort_text,
+          compare.length,
+          compare.order,
+        },
       },
       mapping = cmp.mapping.preset.insert {
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
@@ -119,7 +168,7 @@ return {
         ["<C-l>"] = cmp.mapping(function(fallback)
           if luasnip.expand_or_jumpable() then
             vim.fn.feedkeys(("<Plug>luasnip-expand-or-jump"), "")
-          elseif neogen.jumpable() then
+          elseif neogen_ok and neogen.jumpable() then
             vim.fn.feedkeys(("<cmd>lua require('neogen').jump_next()<CR>"), "")
           else
             fallback()
@@ -140,14 +189,11 @@ return {
           }),
       },
       sources = cmp.config.sources({
-        { name = "friendly-snippets" },
-        { name = "luasnip" },
-        { name = "nvim_lsp" },
-        { name = "nvim_lua" },
-      },
-        {
-          { name = "buffer" }, -- max_item_count = 5 }
-        }),
+        { name = "nvim_lsp", group_index = 1 },
+        { name = "nvim_lua", group_index = 1 },
+        { name = "luasnip",  group_index = 1 },
+        { name = "buffer",   group_index = 2 },
+      }),
       snippet = {
         expand = function(args)
           require("luasnip").lsp_expand(args.body)
@@ -159,16 +205,21 @@ return {
       },
       formatting = {
         format = lspkind.cmp_format {
-          -- with_text = true,
-          -- mode      = 'symbol', -- show only symbol annotations
-          maxwidth = 50,         -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-          ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
-          -- The function below will be called before any actual modifications from lspkind
-          -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
-          -- before = function (entry, vim_item)
-          --   ...
-          --   return vim_item
-          -- end
+          maxwidth = 50,
+          ellipsis_char = "...",
+          before = function(entry, vim_item)
+            vim_item.menu = ({
+              nvim_lsp    = "[neovim/nvim-lspconfig]",
+              luasnip     = "[L3MON4D3/LuaSnip]",
+              buffer      = "[hrsh7th/cmp-buffer]",
+              path        = "[hrsh7th/cmp-path]",
+              nvim_lua    = "[hrsh7th/cmp-nvim-lua]",
+              treesitter  = "[ray-x/cmp-treesitter]",
+              emoji       = "[hrsh7th/cmp-emoji]",
+              nerdfont    = "[chrisgrieser/cmp-nerdfont]",
+            })[entry.source.name]
+            return vim_item
+          end,
         }
       }
     })

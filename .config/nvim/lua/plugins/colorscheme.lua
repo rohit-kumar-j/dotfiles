@@ -20,6 +20,7 @@ return {
   { "nyoom-engineering/oxocarbon.nvim", event = "VeryLazy" },
   { "rose-pine/neovim",                 event = "VeryLazy" },
   { "tiagovla/tokyodark.nvim",          event = "VeryLazy" },
+  { "blazkowolf/gruber-darker.nvim",    event = "VeryLazy" },
   {
     "mcchrish/zenbones.nvim",
     dependencies = "rktjmp/lush.nvim",

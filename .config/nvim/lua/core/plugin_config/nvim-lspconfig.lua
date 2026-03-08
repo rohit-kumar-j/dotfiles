@@ -1,7 +1,7 @@
 return {
   "neovim/nvim-lspconfig",
   enabled = vim.api.nvim_get_var("useLSP"),
-  event = "InsertEnter",
+  event = "BufReadPre",
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "williamboman/mason.nvim",
@@ -126,18 +126,7 @@ return {
       }
     end
 
-    -- First, register all servers with vim.lsp.config (for Neovim 0.10+)
-    for _, lsp in ipairs(lsp_servers) do
-      -- Register the server configuration
-      vim.lsp.config(lsp.name, {
-        cmd = lsp.cmd or nil,
-        filetypes = lsp.filetypes or nil,
-        root_dir = lsp.root_dir or nil,
-        settings = lsp.settings or {},
-      })
-    end
-
-    -- Configure each server using new API
+    -- Configure each server (base configs already registered in lsp_settings.lua)
     for _, lsp in ipairs(lsp_servers) do
       local config = { -- Start with base config that always applies
         capabilities = capabilities,
